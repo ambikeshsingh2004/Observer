@@ -6,6 +6,7 @@ require('dotenv').config();
 // PostgreSQL Client
 const pgClient = new Client({
   connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 pgClient.connect().catch(err => console.error('PG Connect Error', err));
 
