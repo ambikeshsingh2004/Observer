@@ -14,7 +14,7 @@ import { Layers, Play, RefreshCcw, Database } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 function CompositeExperiment() {
   const [results, setResults] = useState([]); // [{ name: 'Index(Status)', time: 10, type: 'Index Scan' }]

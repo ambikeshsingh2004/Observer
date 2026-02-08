@@ -15,7 +15,7 @@ import { Play, TrendingUp } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 function WriteCostExperiment() {
   const [currentStep, setCurrentStep] = useState(-1); 

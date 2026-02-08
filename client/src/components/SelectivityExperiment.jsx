@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Filter, Play, Database, AlertTriangle, Layers } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 function SelectivityExperiment() {
   const [results, setResults] = useState([]);

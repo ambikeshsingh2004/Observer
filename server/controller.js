@@ -57,6 +57,26 @@ const Controller = {
 
     try {
       const lowerQuery = query.toLowerCase().trim();
+
+      // SAFETY: Block dangerous commands for public demo
+      const unsafeKeywords = [
+        'drop table', 'truncate', 'alter table', 'grant', 'revoke',
+        'insert into', 'update', 'delete from', 'create table', 'drop database'
+      ];
+
+      const isUnsafe = unsafeKeywords.some(keyword => lowerQuery.includes(keyword));
+
+      // Allow SELECT and EXPLAIN
+      const isAllowed = lowerQuery.startsWith('select') || lowerQuery.startsWith('explain');
+
+      if (isUnsafe && !isAllowed) {
+        return res.json({
+          error: true,
+          message: "Safety Guard: Destructive commands are blocked in this demo.",
+          detail: "Only SELECT and EXPLAIN queries are allowed."
+        });
+      }
+
       let resultRows = [];
       let rowCount = 0;
       let duration = 0;

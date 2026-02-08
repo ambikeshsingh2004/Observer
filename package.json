@@ -1,15 +1,15 @@
 {
-  "name": "performance-observer",
+  "name": "observer-app",
   "version": "1.0.0",
-  "description": "Performance Observability Platform",
   "scripts": {
-    "postinstall": "npm install --prefix client && npm install --prefix server",
+    "start": "cd server && npm start",
     "build": "npm install --prefix client && npm run build --prefix client && npm install --prefix server",
-    "start": "node server/index.js",
-    "dev:server": "cd server && npm run dev",
-    "dev:client": "cd client && npm run dev"
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
