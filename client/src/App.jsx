@@ -101,7 +101,7 @@ function App() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '1.2rem', color: '#f8fafc', marginRight: '2rem' }}>
           <div style={{ width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981' }}></div>
-          Observer
+          QueryLab
         </div>
 
         <button 

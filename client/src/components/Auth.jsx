@@ -61,7 +61,7 @@ function Auth({ onAuthSuccess }) {
               borderRadius: '50%',
               boxShadow: '0 0 10px #10b981'
             }}></div>
-            Observer
+            QueryLab
           </div>
           <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
             PostgreSQL Performance Laboratory
