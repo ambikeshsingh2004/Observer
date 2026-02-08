@@ -1,0 +1,35 @@
+services:
+  # Web Service (Frontend + Backend)
+  - type: web
+    name: querylab
+    env: node # environment (e.g. node, python, go, etc)
+    plan: free # plan (e.g. free, starter, standard, etc)
+    buildCommand: npm run build # command to build the service
+    startCommand: npm start # command to start the service
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generate: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: querylab-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: querylab-redis
+          property: connectionString
+
+  # Redis Instance
+  - type: redis
+    name: querylab-redis
+    plan: free # plan (e.g. free, starter, standard, etc)
+    ipAllowList: [] # Allow all internal connections
+
+databases:
+  # PostgreSQL Database
+  - name: querylab-db
+    databaseName: querylab
+    user: querylab_user
+    plan: free # plan (e.g. free, starter, standard, etc)
