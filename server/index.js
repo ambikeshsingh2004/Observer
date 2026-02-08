@@ -33,17 +33,23 @@ app.use(express.json());
 // app.use('/api', authMiddleware);
 
 const Controller = require('./controller');
+const { AuthController, authMiddleware } = require('./auth');
 
-// API Routes
+// Public Auth Routes
+app.post('/api/auth/register', AuthController.register);
+app.post('/api/auth/login', AuthController.login);
+app.get('/api/auth/me', authMiddleware, AuthController.me);
+
+// API Routes (Protected)
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.post('/api/query', Controller.runQuery);
-app.post('/api/sql', Controller.runRawSQL);
-app.post('/api/manage-index', Controller.manageIndex);
-app.post('/api/modify-data', Controller.modifyData);
-app.get('/api/external', Controller.fetchExternalData);
+app.post('/api/query', authMiddleware, Controller.runQuery);
+app.post('/api/sql', authMiddleware, Controller.runRawSQL);
+app.post('/api/manage-index', authMiddleware, Controller.manageIndex);
+app.post('/api/modify-data', authMiddleware, Controller.modifyData);
+app.get('/api/external', authMiddleware, Controller.fetchExternalData);
 
 // Serve Static Files (Production)
 // In production, the server will serve the built React files from ../client/dist

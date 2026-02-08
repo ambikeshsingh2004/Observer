@@ -1,12 +1,87 @@
-import React, { useState } from 'react';
-import { LayoutDashboard, TrendingUp, Layers, Filter } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LayoutDashboard, TrendingUp, Layers, Filter, LogOut } from 'lucide-react';
+import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import WriteCostExperiment from './components/WriteCostExperiment';
 import CompositeExperiment from './components/CompositeExperiment';
-import SelectivityExperiment from './components/SelectivityExperiment'; // New
+import SelectivityExperiment from './components/SelectivityExperiment';
+import Auth from './components/Auth';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('dashboard'); 
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Check for existing token on mount
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+
+    if (savedToken && savedUser) {
+      // Verify token is still valid
+      axios.get('/api/auth/me', {
+        headers: { Authorization: `Bearer ${savedToken}` }
+      })
+      .then(res => {
+        setToken(savedToken);
+        setUser(JSON.parse(savedUser));
+      })
+      .catch(() => {
+        // Token expired or invalid
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      })
+      .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  // Set up axios interceptor to include token in all requests
+  useEffect(() => {
+    const requestInterceptor = axios.interceptors.request.use(
+      (config) => {
+        const currentToken = localStorage.getItem('token');
+        if (currentToken) {
+          config.headers.Authorization = `Bearer ${currentToken}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    // Cleanup interceptor on unmount
+    return () => {
+      axios.interceptors.request.eject(requestInterceptor);
+    };
+  }, [token]);
+
+  const handleAuthSuccess = (newToken, newUser) => {
+    setToken(newToken);
+    setUser(newUser);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+  };
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a' }}>
+        <div style={{ color: '#94a3b8' }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return <Auth onAuthSuccess={handleAuthSuccess} />;
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -59,6 +134,27 @@ function App() {
         >
           <Layers size={18} /> Composite Filter
         </button>
+
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{user?.email}</span>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: 'none',
+              border: '1px solid #334155',
+              color: '#94a3b8',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              fontSize: '0.9rem'
+            }}
+          >
+            <LogOut size={16} /> Logout
+          </button>
+        </div>
 
       </nav>
 
