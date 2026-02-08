@@ -57,7 +57,7 @@ if (process.env.NODE_ENV === 'production' || process.env.SERVE_STATIC === 'true'
     const clientDist = path.join(__dirname, '../client/dist');
     app.use(express.static(clientDist));
 
-    app.get('*', (req, res) => {
+    app.get(/.*/, (req, res) => {
         res.sendFile(path.join(clientDist, 'index.html'));
     });
 }
