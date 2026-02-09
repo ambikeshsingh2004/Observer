@@ -2,8 +2,15 @@ const { Client } = require('pg');
 const { faker } = require('@faker-js/faker');
 require('dotenv').config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+const isRender = process.env.DATABASE_URL && process.env.DATABASE_URL.includes('render.com');
+const sslConfig = (isProduction || isRender) ? { rejectUnauthorized: false } : false;
+
+console.log(`🔌 Connecting to database... (SSL: ${!!sslConfig})`);
+
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
+  ssl: sslConfig
 });
 
 const BATCH_SIZE = 10000; // Insert 10k rows at a time
